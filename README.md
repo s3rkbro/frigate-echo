@@ -63,6 +63,9 @@ retention_days: 7
 
 mqtt:
   server: "192.168.0.10"
+  port: 1883
+  username: "<mqtt-user>"
+  password: "<mqtt-password>"
   topic: "frigate/reviews"
 
 home_assistant:

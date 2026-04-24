@@ -27,8 +27,17 @@ end
 # connect to MQTT
 
 begin
-	logger.info("Connecting to MQTT at #{CONFIG[:mqtt][:server]}")
-  MQTT::Client.connect(CONFIG[:mqtt][:server]) do |client|
+	mqtt_options = {
+		host: CONFIG[:mqtt][:server],
+		port: CONFIG[:mqtt][:port] || 1883
+	}
+
+	[:username, :password, :client_id, :ssl].each do |key|
+		mqtt_options[key] = CONFIG[:mqtt][key] if CONFIG[:mqtt].key?(key)
+	end
+
+	logger.info("Connecting to MQTT at #{mqtt_options[:host]}:#{mqtt_options[:port]}")
+  MQTT::Client.connect(mqtt_options) do |client|
   	logger.info("Connected. Listening to topic #{CONFIG[:mqtt][:topic]}")
     
     client.get(CONFIG[:mqtt][:topic]) do |topic, message_str|
